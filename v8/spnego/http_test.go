@@ -19,12 +19,12 @@ import (
 
 	"github.com/gorilla/sessions"
 	"github.com/jcmturner/goidentity/v6"
-	"github.com/jcmturner/gokrb5/v8/client"
-	"github.com/jcmturner/gokrb5/v8/config"
-	"github.com/jcmturner/gokrb5/v8/keytab"
-	"github.com/jcmturner/gokrb5/v8/service"
-	"github.com/jcmturner/gokrb5/v8/test"
-	"github.com/jcmturner/gokrb5/v8/test/testdata"
+	"github.com/jmickeyd/gokrb5/v8/client"
+	"github.com/jmickeyd/gokrb5/v8/config"
+	"github.com/jmickeyd/gokrb5/v8/keytab"
+	"github.com/jmickeyd/gokrb5/v8/service"
+	"github.com/jmickeyd/gokrb5/v8/test"
+	"github.com/jmickeyd/gokrb5/v8/test/testdata"
 	"github.com/stretchr/testify/assert"
 )
 

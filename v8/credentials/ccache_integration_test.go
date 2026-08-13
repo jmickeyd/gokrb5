@@ -11,10 +11,10 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/jcmturner/gokrb5/v8/iana/nametype"
-	"github.com/jcmturner/gokrb5/v8/test"
-	"github.com/jcmturner/gokrb5/v8/test/testdata"
-	"github.com/jcmturner/gokrb5/v8/types"
+	"github.com/jmickeyd/gokrb5/v8/iana/nametype"
+	"github.com/jmickeyd/gokrb5/v8/test"
+	"github.com/jmickeyd/gokrb5/v8/test/testdata"
+	"github.com/jmickeyd/gokrb5/v8/types"
 	"github.com/stretchr/testify/assert"
 )
 
