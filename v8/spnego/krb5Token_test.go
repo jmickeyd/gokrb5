@@ -46,7 +46,7 @@ func TestKRB5Token_newAuthenticatorChksum(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Error decoding KRB5Token hex: %v", err)
 	}
-	cb := newAuthenticatorChksum([]int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf})
+	cb := newAuthenticatorChksum([]int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf}, nil)
 	assert.Equal(t, b, cb, "SPNEGO Authenticator checksum not as expected")
 }
 
@@ -57,7 +57,7 @@ func TestKRB5Token_newAuthenticatorWithSubkeyGeneration(t *testing.T) {
 	creds.SetCName(types.PrincipalName{NameType: nametype.KRB_NT_PRINCIPAL, NameString: testdata.TEST_PRINCIPALNAME_NAMESTRING})
 	var etypeID int32 = 18
 	keyLen := 32 // etypeID 18 refers to AES256 -> 32 bytes key
-	a, err := krb5TokenAuthenticator(creds, []int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf})
+	a, err := krb5TokenAuthenticator(creds, []int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf}, nil)
 	if err != nil {
 		t.Fatalf("Error creating authenticator: %v", err)
 	}
@@ -85,7 +85,7 @@ func TestKRB5Token_newAuthenticator(t *testing.T) {
 	t.Parallel()
 	creds := credentials.New("hftsai", testdata.TEST_REALM)
 	creds.SetCName(types.PrincipalName{NameType: nametype.KRB_NT_PRINCIPAL, NameString: testdata.TEST_PRINCIPALNAME_NAMESTRING})
-	a, err := krb5TokenAuthenticator(creds, []int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf})
+	a, err := krb5TokenAuthenticator(creds, []int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf}, nil)
 	if err != nil {
 		t.Fatalf("Error creating authenticator: %v", err)
 	}
@@ -124,7 +124,7 @@ func TestNewAPREQKRB5Token_and_Marshal(t *testing.T) {
 		KeyValue: make([]byte, 32),
 	}
 
-	mt, err := NewKRB5TokenAPREQ(&cl, tkt, key, []int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf}, []int{})
+	mt, err := NewKRB5TokenAPREQ(&cl, tkt, key, []int{gssapi.ContextFlagInteg, gssapi.ContextFlagConf}, []int{}, nil)
 	if err != nil {
 		t.Fatalf("Error creating KRB5Token: %v", err)
 	}

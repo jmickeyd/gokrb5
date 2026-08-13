@@ -161,14 +161,14 @@ func (m *KRB5Token) Context() context.Context {
 }
 
 // NewKRB5TokenAPREQ creates a new KRB5 token with AP_REQ
-func NewKRB5TokenAPREQ(cl *client.Client, tkt messages.Ticket, sessionKey types.EncryptionKey, GSSAPIFlags []int, APOptions []int) (KRB5Token, error) {
+func NewKRB5TokenAPREQ(cl *client.Client, tkt messages.Ticket, sessionKey types.EncryptionKey, GSSAPIFlags []int, APOptions []int, ChannelBinding *[16]byte) (KRB5Token, error) {
 	// TODO consider providing the SPN rather than the specific tkt and key and get these from the krb client.
 	var m KRB5Token
 	m.OID = gssapi.OIDKRB5.OID()
 	tb, _ := hex.DecodeString(TOK_ID_KRB_AP_REQ)
 	m.tokID = tb
 
-	auth, err := krb5TokenAuthenticator(cl.Credentials, GSSAPIFlags)
+	auth, err := krb5TokenAuthenticator(cl.Credentials, GSSAPIFlags, ChannelBinding)
 	if err != nil {
 		return m, err
 	}
@@ -188,7 +188,7 @@ func NewKRB5TokenAPREQ(cl *client.Client, tkt messages.Ticket, sessionKey types.
 }
 
 // krb5TokenAuthenticator creates a new kerberos authenticator for kerberos MechToken
-func krb5TokenAuthenticator(creds *credentials.Credentials, flags []int) (types.Authenticator, error) {
+func krb5TokenAuthenticator(creds *credentials.Credentials, flags []int, channelBinding *[16]byte) (types.Authenticator, error) {
 	//RFC 4121 Section 4.1.1
 	auth, err := types.NewAuthenticator(creds.Domain(), creds.CName())
 	if err != nil {
@@ -196,15 +196,19 @@ func krb5TokenAuthenticator(creds *credentials.Credentials, flags []int) (types.
 	}
 	auth.Cksum = types.Checksum{
 		CksumType: chksumtype.GSSAPI,
-		Checksum:  newAuthenticatorChksum(flags),
+		Checksum:  newAuthenticatorChksum(flags, channelBinding),
 	}
 	return auth, nil
 }
 
 // Create new authenticator checksum for kerberos MechToken
-func newAuthenticatorChksum(flags []int) []byte {
+func newAuthenticatorChksum(flags []int, channelBinding *[16]byte) []byte {
 	a := make([]byte, 24)
 	binary.LittleEndian.PutUint32(a[:4], 16)
+	if channelBinding != nil {
+		cb := *channelBinding
+		copy(a[4:20], cb[:])
+	}
 	for _, i := range flags {
 		if i == gssapi.ContextFlagDeleg {
 			x := make([]byte, 28-len(a))
